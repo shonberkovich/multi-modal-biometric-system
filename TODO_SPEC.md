@@ -101,7 +101,7 @@ Rules for Data Fetching:
 	[x] TODO 8.3 - Palmprint (eval_palm.py): Write Python code that uses requests and zipfile to autonomously download a public contactless palmprint dataset to a tempfile.TemporaryDirectory(), evaluate 500 cases, and automatically clean up the files when done.
 	[x] TODO 8.4 - Gait (eval_gait.py): Write Python code that autonomously downloads a public Gait dataset (videos or silhouettes) to a temporary directory, evaluates 500 cases, and cleans up.
 	[x] TODO 8.5 - Fingerprint (eval_finger.py): Write Python code that autonomously downloads a public fingerprint dataset (like SOCOFing) to a temporary directory, evaluates 500 cases, and cleans up.
-	[ ] TODO 8.6: Aggregate all results and save them to a single output file: backend/benchmarks/consolidated_metrics.json.
+	[x] TODO 8.6: Aggregate all results and save them to a single output file: backend/benchmarks/consolidated_metrics.json.
 
 
 
