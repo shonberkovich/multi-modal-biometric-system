@@ -1,8 +1,12 @@
 import { useState } from 'react'
-import { UserPlus } from 'lucide-react'
+import { UserPlus, Loader2, Send } from 'lucide-react'
 import WebcamCapture from '../components/WebcamCapture'
 import AudioRecorder from '../components/AudioRecorder'
 import FileUpload from '../components/FileUpload'
+import Toast from '../components/Toast'
+import { enroll } from '../api/client'
+
+const REQUIRED_METHODS = ['face', 'voice', 'palm', 'gait', 'fingerprint']
 
 export default function Enrollment() {
   const [nationalId, setNationalId] = useState('')
@@ -14,9 +18,35 @@ export default function Enrollment() {
     gait: null,
     fingerprint: null,
   })
+  const [submitting, setSubmitting] = useState(false)
+  const [toast, setToast] = useState(null)
 
   const setCapture = (method) => (file) =>
     setCaptures((prev) => ({ ...prev, [method]: file }))
+
+  const isComplete =
+    nationalId.trim() &&
+    fullName.trim() &&
+    REQUIRED_METHODS.every((method) => captures[method])
+
+  const handleSubmit = async () => {
+    setSubmitting(true)
+    try {
+      const { data } = await enroll({ nationalId, fullName, ...captures })
+      setToast({
+        type: 'success',
+        message: `Enrolled ${data.full_name} successfully across all 5 methods.`,
+      })
+      setNationalId('')
+      setFullName('')
+      setCaptures({ face: null, voice: null, palm: null, gait: null, fingerprint: null })
+    } catch (err) {
+      const detail = err.response?.data?.detail || 'Enrollment failed. Please try again.'
+      setToast({ type: 'error', message: detail })
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   return (
     <div>
@@ -85,6 +115,27 @@ export default function Enrollment() {
           />
         </div>
       </div>
+
+      <div className="mt-8 flex justify-end">
+        <button
+          type="button"
+          disabled={!isComplete || submitting}
+          onClick={handleSubmit}
+          className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-brand-500/30 transition-all duration-200 ease-in-out hover:from-brand-600 hover:to-brand-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-300 disabled:to-slate-300 disabled:shadow-none"
+        >
+          {submitting ? (
+            <>
+              <Loader2 size={16} className="animate-spin" /> Enrolling...
+            </>
+          ) : (
+            <>
+              <Send size={16} /> Submit enrollment
+            </>
+          )}
+        </button>
+      </div>
+
+      {toast && <Toast {...toast} onDismiss={() => setToast(null)} />}
     </div>
   )
 }
