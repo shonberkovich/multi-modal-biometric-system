@@ -9,6 +9,7 @@ mediapipe>=1.0.0
 librosa
 scikit-learn
 python-multipart
+c3d
 numpy
 pydantic
 soundfile
