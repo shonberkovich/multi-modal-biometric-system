@@ -23,3 +23,11 @@ export function verifySingle({ method, file }) {
   return api.post('/verify/single', form)
 }
 
+export function verifyFusion({ face, voice, palm }) {
+  const form = new FormData()
+  form.append('face', face)
+  form.append('voice', voice)
+  form.append('palm', palm)
+  return api.post('/verify/fusion', form)
+}
+
