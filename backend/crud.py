@@ -35,6 +35,20 @@ def get_all_persons(db: Session) -> Sequence[PersonDirectory]:
     return db.query(PersonDirectory).all()
 
 
+def delete_person(db: Session, random_id: str) -> None:
+    """Cascade-delete a person and all of their associated rows.
+
+    Used to roll back a partially-completed /enroll when a later capture
+    fails QA or feature extraction.
+    """
+    db.query(MethodRetrievalVector).filter(MethodRetrievalVector.random_id == random_id).delete()
+    db.query(FeatureVector).filter(FeatureVector.random_id == random_id).delete()
+    db.query(RawData).filter(RawData.random_id == random_id).delete()
+    db.query(IdentityMap).filter(IdentityMap.random_id == random_id).delete()
+    db.query(PersonDirectory).filter(PersonDirectory.random_id == random_id).delete()
+    db.commit()
+
+
 def save_raw_data(
     db: Session,
     random_id: str,

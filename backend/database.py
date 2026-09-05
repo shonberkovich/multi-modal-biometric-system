@@ -68,8 +68,11 @@ class IdentityMap(Base):
 class RawData(Base):
     __tablename__ = "raw_data"
 
-    random_id = Column(String, ForeignKey("person_directory.random_id"), primary_key=True, default=_uuid)
-    capture = Column(String, nullable=False)  # e.g. "face", "voice", "palm", "gait", "fingerprint"
+    # Composite PK (random_id, capture): a person has one raw capture per
+    # biometric method (5 total), mirroring the Feature_vectors table's
+    # (random_id, method) composite key below.
+    random_id = Column(String, ForeignKey("person_directory.random_id"), primary_key=True)
+    capture = Column(String, primary_key=True)  # "face", "voice", "palm", "gait", "fingerprint"
     ext = Column(String, nullable=False)  # file extension, e.g. "jpg", "wav", "mp4"
     sha256 = Column(String, nullable=False)
     byte_size = Column(Integer, nullable=False)
