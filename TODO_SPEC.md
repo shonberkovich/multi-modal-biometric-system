@@ -113,7 +113,7 @@ Instruction to AI: The final project requires a specific presentation and a comp
 
 	[ ] TODO 9.1 - Literature Review: Find a recent paper (2024-2026) on "Contactless Palmprint Recognition". Summarize the experiments, results, conclusions, and future work. Extract exactly 3 direct quotes from this paper.
 
-	[ ] TODO 9.2 - Generate the 5-Slide Presentation Content:
+	[x] TODO 9.2 - Generate the 5-Slide Presentation Content:
 
 
 	Slide 1: Student Name (שון ברקוביץ), Names of the 3 fused biometric methods (Face, Voice, Palmprint), Paper Title + Link, and a representative image from the paper.
