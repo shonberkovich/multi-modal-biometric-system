@@ -16,3 +16,10 @@ export function enroll({ nationalId, fullName, face, voice, palm, gait, fingerpr
   return api.post('/enroll', form)
 }
 
+export function verifySingle({ method, file }) {
+  const form = new FormData()
+  form.append('method', method)
+  form.append('file', file)
+  return api.post('/verify/single', form)
+}
+
