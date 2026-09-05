@@ -145,5 +145,5 @@ Instruction to AI: The final project requires a specific presentation and a comp
 	Results comparing individual method accuracy vs. Fusion accuracy (Majority Vote vs. Weighted Vector).
 
 
-"This is the spec for my full-stack Biometrics assignment. We are using React and FastAPI. Please start with Phase 1 in the backend folder. Write the database configuration and models. Do not move to Phase 2 until I approve."
+"This is the spec for my full-stack Biometrics assignment. We are using React and FastAPI.
 
