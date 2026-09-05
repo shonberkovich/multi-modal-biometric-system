@@ -26,6 +26,12 @@ def extract_face_vector(image: Union[str, np.ndarray]) -> List[float]:
         result = DeepFace.represent(
             img_path=image,
             model_name="Facenet512",
+            # The installed opencv-python wheel does not bundle Haar cascade
+            # data files (DeepFace's default "opencv" detector needs them),
+            # and modern mediapipe (>=1.0) dropped the legacy `solutions` API
+            # DeepFace's "mediapipe" backend relies on. mtcnn is a pure
+            # TensorFlow detector with no such dependency.
+            detector_backend="mtcnn",
             enforce_detection=True,
         )
     except Exception as exc:

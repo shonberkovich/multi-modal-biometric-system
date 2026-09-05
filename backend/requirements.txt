@@ -3,8 +3,9 @@ uvicorn[standard]
 sqlalchemy
 opencv-python
 deepface
+tf-keras
 speechbrain
-mediapipe
+mediapipe>=1.0.0
 librosa
 scikit-learn
 python-multipart
