@@ -147,3 +147,85 @@ async def verify_single(
         result["national_id"] = identity.national_id if identity else None
         result["full_name"] = identity.full_name if identity else None
     return result
+
+
+def _identity_summary(db: Session, random_id: str) -> dict:
+    identity = db.get(IdentityMap, random_id)
+    return {
+        "random_id": random_id,
+        "national_id": identity.national_id if identity else None,
+        "full_name": identity.full_name if identity else None,
+    }
+
+
+@app.post("/verify/fusion")
+async def verify_fusion(
+    face: UploadFile = File(...),
+    voice: UploadFile = File(...),
+    palm: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    """Verify by fusing Face, Voice and Palm captures.
+
+    Returns both a Majority Voting result (2-out-of-3 independent
+    single-method matches) and a Weighted Vector Fusion result
+    (V_fused = [w_f*V_f, w_v*V_v, w_p*V_p], matched against every
+    enrolled person who has all three methods on file).
+    """
+    uploads = {"face": face, "voice": voice, "palm": palm}
+    query_vectors = {}
+
+    for method, upload in uploads.items():
+        content = await upload.read()
+        ext = _file_extension(upload)
+        fd, tmp_path = tempfile.mkstemp(suffix=f".{ext}")
+        os.close(fd)
+        try:
+            with open(tmp_path, "wb") as f:
+                f.write(content)
+            try:
+                query_vectors[method] = biometrics.extract_vector(method, tmp_path)
+            except biometrics.QAFailure as exc:
+                raise HTTPException(status_code=422, detail=f"QA check failed for '{method}': {exc}")
+            except biometrics.ExtractionFailure as exc:
+                raise HTTPException(status_code=422, detail=f"Feature extraction failed for '{method}': {exc}")
+        finally:
+            os.unlink(tmp_path)
+
+    # --- Sub-task A: Majority Voting (2 out of 3) ---
+    per_method_result = {}
+    for method in biometrics.FUSION_METHODS:
+        stored = crud.get_all_feature_vectors_for_method(db, method)
+        candidates = [(fv.random_id, fv.vector) for fv in stored]
+        best_id, score = biometrics.best_match(query_vectors[method], candidates)
+        matched = best_id is not None and score >= biometrics.MATCH_THRESHOLDS[method]
+        per_method_result[method] = {"random_id": best_id, "score": score, "matched": matched}
+
+    fused_matched, winning_id = biometrics.majority_vote(
+        {m: (r["random_id"], r["matched"]) for m, r in per_method_result.items()}
+    )
+    majority_result = {"matched": fused_matched, "per_method": per_method_result}
+    if fused_matched:
+        majority_result.update(_identity_summary(db, winning_id))
+
+    # --- Sub-task B: Weighted Vector Fusion ---
+    query_fused = biometrics.build_fused_vector(query_vectors)
+
+    per_person_vectors: dict = {}
+    for method in biometrics.FUSION_METHODS:
+        for fv in crud.get_all_feature_vectors_for_method(db, method):
+            per_person_vectors.setdefault(fv.random_id, {})[method] = fv.vector
+
+    fusion_candidates = [
+        (random_id, biometrics.build_fused_vector(methods))
+        for random_id, methods in per_person_vectors.items()
+        if set(biometrics.FUSION_METHODS).issubset(methods)
+    ]
+    fusion_best_id, fusion_score = biometrics.best_match(query_fused, fusion_candidates)
+    fusion_matched = fusion_best_id is not None and fusion_score >= biometrics.FUSION_MATCH_THRESHOLD
+
+    fusion_result = {"matched": fusion_matched, "score": fusion_score}
+    if fusion_matched:
+        fusion_result.update(_identity_summary(db, fusion_best_id))
+
+    return {"majority_vote": majority_result, "weighted_fusion": fusion_result}
