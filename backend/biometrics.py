@@ -104,6 +104,45 @@ def cosine_similarity(vec_a: List[float], vec_b: List[float]) -> float:
     return float(np.dot(a, b) / denom)
 
 
+FUSION_METHODS = ("face", "voice", "palm")
+
+# Relative weights for the fused vector V_fused = [w_f*V_f, w_v*V_v, w_p*V_p].
+FUSION_WEIGHTS = {"face": 0.4, "voice": 0.3, "palm": 0.3}
+FUSION_MATCH_THRESHOLD = 0.5
+
+
+def build_fused_vector(vectors: dict) -> List[float]:
+    """Concatenate weighted per-method vectors into one fused vector.
+
+    `vectors` must contain a "face", "voice" and "palm" entry.
+    """
+    parts = []
+    for method in FUSION_METHODS:
+        weighted = np.asarray(vectors[method], dtype=np.float64) * FUSION_WEIGHTS[method]
+        parts.append(weighted)
+    return np.concatenate(parts).tolist()
+
+
+def majority_vote(per_method_result: dict) -> Tuple[bool, "str | None"]:
+    """2-out-of-3 majority vote across independent single-method matches.
+
+    `per_method_result` maps method -> (candidate_random_id_or_None, matched_bool).
+    Returns (fused_matched, winning_random_id).
+    """
+    from collections import Counter
+
+    votes = Counter()
+    for candidate_id, matched in per_method_result.values():
+        if matched and candidate_id is not None:
+            votes[candidate_id] += 1
+
+    if not votes:
+        return False, None
+
+    winning_id, count = votes.most_common(1)[0]
+    return count >= 2, winning_id
+
+
 def best_match(
     query_vector: List[float], candidates: List[Tuple[str, List[float]]]
 ) -> Tuple[str, float]:
