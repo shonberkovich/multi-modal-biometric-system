@@ -94,16 +94,20 @@ def _crop_palm_roi(image_bgr: np.ndarray) -> np.ndarray:
     return roi
 
 
-def extract_palm_vector(image: np.ndarray) -> List[float]:
-    """Extract a palmprint feature vector from a BGR image (as read by cv2.imread).
+def extract_palm_vector_from_roi(roi_bgr: np.ndarray) -> List[float]:
+    """Extract a MobileNetV2 feature vector from an already-cropped palm ROI.
+
+    Used directly on public palmprint datasets, which are near-universally
+    distributed as pre-segmented ROI patches rather than raw hand photos
+    (see benchmarks/eval_palm.py) - there is no hand to detect landmarks
+    on in those images, only the extracted patch itself.
 
     Returns:
         A list of floats (L2-normalized MobileNetV2 embedding).
     """
     from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
-    roi = _crop_palm_roi(image)
-    roi_resized = cv2.resize(roi, (224, 224))
+    roi_resized = cv2.resize(roi_bgr, (224, 224))
     roi_rgb = cv2.cvtColor(roi_resized, cv2.COLOR_BGR2RGB).astype(np.float32)
     batch = preprocess_input(np.expand_dims(roi_rgb, axis=0))
 
@@ -115,3 +119,12 @@ def extract_palm_vector(image: np.ndarray) -> List[float]:
         features = features / norm
 
     return features.tolist()
+
+
+def extract_palm_vector(image: np.ndarray) -> List[float]:
+    """Extract a palmprint feature vector from a raw BGR hand image (as read
+    by cv2.imread): detects the hand, crops the palm ROI, then delegates to
+    extract_palm_vector_from_roi().
+    """
+    roi = _crop_palm_roi(image)
+    return extract_palm_vector_from_roi(roi)
