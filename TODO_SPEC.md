@@ -96,11 +96,11 @@ CRITICAL INSTRUCTION TO AI: You MUST write standalone Python scripts that AUTOMA
 Rules for Data Fetching:
 	If a dataset is available via a library (like sklearn.datasets.fetch_lfw_pairs or Hugging Face datasets), use it.
 	If it is NOT natively available via a library, your script MUST use requests or urllib to download a public dataset ZIP from a direct URL (e.g., raw GitHub links) to a temporary directory using Python's tempfile module. Extract it, process 500 sample pairs, and then automatically clean up/delete the temporary files.
-	[ ] TODO 8.1 - Face (eval_face.py): Use sklearn.datasets.fetch_lfw_pairs(subset='test') to fetch 500 pairs automatically in the background. Calculate Accuracy, FAR, FRR, EER.
-	[ ] TODO 8.2 - Voice (eval_voice.py): Use the Hugging Face datasets library to load an open audio dataset automatically (e.g., a subset of VoxCeleb or PolyAI/minds14). Calculate metrics for 500 pairs.
-	[ ] TODO 8.3 - Palmprint (eval_palm.py): Write Python code that uses requests and zipfile to autonomously download a public contactless palmprint dataset to a tempfile.TemporaryDirectory(), evaluate 500 cases, and automatically clean up the files when done.
-	[ ] TODO 8.4 - Gait (eval_gait.py): Write Python code that autonomously downloads a public Gait dataset (videos or silhouettes) to a temporary directory, evaluates 500 cases, and cleans up.
-	[ ] TODO 8.5 - Fingerprint (eval_finger.py): Write Python code that autonomously downloads a public fingerprint dataset (like SOCOFing) to a temporary directory, evaluates 500 cases, and cleans up.
+	[x] TODO 8.1 - Face (eval_face.py): Use sklearn.datasets.fetch_lfw_pairs(subset='test') to fetch 500 pairs automatically in the background. Calculate Accuracy, FAR, FRR, EER.
+	[x] TODO 8.2 - Voice (eval_voice.py): Use the Hugging Face datasets library to load an open audio dataset automatically (e.g., a subset of VoxCeleb or PolyAI/minds14). Calculate metrics for 500 pairs.
+	[x] TODO 8.3 - Palmprint (eval_palm.py): Write Python code that uses requests and zipfile to autonomously download a public contactless palmprint dataset to a tempfile.TemporaryDirectory(), evaluate 500 cases, and automatically clean up the files when done.
+	[x] TODO 8.4 - Gait (eval_gait.py): Write Python code that autonomously downloads a public Gait dataset (videos or silhouettes) to a temporary directory, evaluates 500 cases, and cleans up.
+	[x] TODO 8.5 - Fingerprint (eval_finger.py): Write Python code that autonomously downloads a public fingerprint dataset (like SOCOFing) to a temporary directory, evaluates 500 cases, and cleans up.
 	[ ] TODO 8.6: Aggregate all results and save them to a single output file: backend/benchmarks/consolidated_metrics.json.
 
 
