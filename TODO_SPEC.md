@@ -111,7 +111,7 @@ Phase 9: Academic Deliverables Generation (Strict Requirements)
 Instruction to AI: The final project requires a specific presentation and a comprehensive Word document. Generate their content exactly as follows:
 
 
-	[ ] TODO 9.1 - Literature Review: Find a recent paper (2024-2026) on "Contactless Palmprint Recognition". Summarize the experiments, results, conclusions, and future work. Extract exactly 3 direct quotes from this paper.
+	[x] TODO 9.1 - Literature Review: Find a recent paper (2024-2026) on "Contactless Palmprint Recognition". Summarize the experiments, results, conclusions, and future work. Extract exactly 3 direct quotes from this paper.
 
 	[x] TODO 9.2 - Generate the 5-Slide Presentation Content:
 
@@ -126,7 +126,7 @@ Instruction to AI: The final project requires a specific presentation and a comp
 
 	Slide 5: Summary of the live 20-volunteers experiment, the Unique AI QA Filter results, and conclusions regarding the fusion methods.
 
-	[ ] TODO 9.3 - Generate the Final Word Document Structure:
+	[x] TODO 9.3 - Generate the Final Word Document Structure:
 
 
 	Generate a template document that includes sections for:
