@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 import biometrics
 import crud
-from database import get_db, init_db
+from database import IdentityMap, get_db, init_db
 
 app = FastAPI(title="Multi-Modal Biometric System API")
 
@@ -99,3 +99,51 @@ async def enroll(
         "full_name": full_name,
         "methods_enrolled": list(uploads.keys()),
     }
+
+
+@app.post("/verify/single")
+async def verify_single(
+    method: str = Form(...),
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    """Verify a single biometric capture against every enrolled identity.
+
+    Runs the QA filter, extracts the capture's feature vector, and compares
+    it via cosine similarity against every stored vector for that method,
+    returning the closest match (if any) and whether it clears the
+    per-method match threshold.
+    """
+    if method not in biometrics.METHODS:
+        raise HTTPException(status_code=400, detail=f"Unknown method: {method}")
+
+    content = await file.read()
+    ext = _file_extension(file)
+    fd, tmp_path = tempfile.mkstemp(suffix=f".{ext}")
+    os.close(fd)
+    try:
+        with open(tmp_path, "wb") as f:
+            f.write(content)
+        try:
+            query_vector = biometrics.extract_vector(method, tmp_path)
+        except biometrics.QAFailure as exc:
+            raise HTTPException(status_code=422, detail=f"QA check failed: {exc}")
+        except biometrics.ExtractionFailure as exc:
+            raise HTTPException(status_code=422, detail=f"Feature extraction failed: {exc}")
+    finally:
+        os.unlink(tmp_path)
+
+    stored = crud.get_all_feature_vectors_for_method(db, method)
+    candidates = [(fv.random_id, fv.vector) for fv in stored]
+    best_id, score = biometrics.best_match(query_vector, candidates)
+
+    threshold = biometrics.MATCH_THRESHOLDS[method]
+    matched = best_id is not None and score >= threshold
+
+    result = {"method": method, "matched": matched, "score": score}
+    if matched:
+        identity = db.get(IdentityMap, best_id)
+        result["random_id"] = best_id
+        result["national_id"] = identity.national_id if identity else None
+        result["full_name"] = identity.full_name if identity else None
+    return result
