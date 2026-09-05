@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { UserPlus } from 'lucide-react'
 import WebcamCapture from '../components/WebcamCapture'
+import AudioRecorder from '../components/AudioRecorder'
 
 export default function Enrollment() {
   const [nationalId, setNationalId] = useState('')
   const [fullName, setFullName] = useState('')
-  const [captures, setCaptures] = useState({ face: null, palm: null, fingerprint: null })
+  const [captures, setCaptures] = useState({ face: null, voice: null, palm: null, fingerprint: null })
 
   const setCapture = (method) => (file) =>
     setCaptures((prev) => ({ ...prev, [method]: file }))
@@ -68,6 +69,7 @@ export default function Enrollment() {
             description="Hold a fingertip close to the camera"
             onCapture={setCapture('fingerprint')}
           />
+          <AudioRecorder onRecorded={setCapture('voice')} />
         </div>
       </div>
     </div>
