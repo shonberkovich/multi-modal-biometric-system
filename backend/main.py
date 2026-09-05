@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 import biometrics
 import crud
-from database import IdentityMap, get_db, init_db
+from database import FeatureVector, IdentityMap, get_db, init_db
 
 app = FastAPI(title="Multi-Modal Biometric System API")
 
@@ -29,6 +29,29 @@ def on_startup() -> None:
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
+
+@app.get("/persons")
+def list_persons(db: Session = Depends(get_db)):
+    """List every enrolled person, for the Dashboard's volunteer tracker."""
+    persons = crud.get_all_persons(db)
+    result = []
+    for person in persons:
+        identity = db.get(IdentityMap, person.random_id)
+        methods = [
+            fv.method
+            for fv in db.query(FeatureVector).filter(FeatureVector.random_id == person.random_id).all()
+        ]
+        result.append(
+            {
+                "random_id": person.random_id,
+                "national_id": identity.national_id if identity else None,
+                "full_name": identity.full_name if identity else None,
+                "created_at": person.created_at.isoformat(),
+                "methods_enrolled": methods,
+            }
+        )
+    return result
 
 
 def _file_extension(upload: UploadFile) -> str:
