@@ -80,20 +80,18 @@ def _extract_landmark_sequence(video_path: str) -> np.ndarray:
     return np.array(frame_vectors, dtype=np.float32)
 
 
-def extract_gait_vector(video_path: str) -> List[float]:
-    """Extract a fixed-size gait feature vector from a video file.
+def pool_landmark_sequence(sequence: np.ndarray) -> List[float]:
+    """Temporal pooling: concatenate the per-coordinate mean and standard
+    deviation across all frames of a (num_frames, num_coords) landmark
+    sequence into one fixed-size, L2-normalized vector.
 
-    Temporal pooling: concatenates the per-coordinate mean and standard
-    deviation across all frames where a pose was detected, giving a fixed
-    (33*3*2 = 198)-dim vector regardless of video length.
-
-    Raises:
-        ValueError: If no pose could be detected in any frame.
+    Works on any joint-coordinate time series, not just MediaPipe Pose's
+    33 landmarks - see benchmarks/eval_gait.py, which pools a public
+    motion-capture dataset's own (differently-shaped) joint sequences
+    with this same function.
     """
-    sequence = _extract_landmark_sequence(video_path)
-
     if sequence.size == 0:
-        raise ValueError("No pose landmarks detected in any frame of the video")
+        raise ValueError("Empty landmark sequence - no frames to pool")
 
     mean_vec = sequence.mean(axis=0)
     std_vec = sequence.std(axis=0)
@@ -104,3 +102,19 @@ def extract_gait_vector(video_path: str) -> List[float]:
         vector = vector / norm
 
     return vector.tolist()
+
+
+def extract_gait_vector(video_path: str) -> List[float]:
+    """Extract a fixed-size gait feature vector from a video file.
+
+    Runs MediaPipe Pose over every frame, then temporally pools the
+    resulting (num_frames, 33*3) landmark sequence into a fixed
+    (33*3*2 = 198)-dim vector via pool_landmark_sequence().
+
+    Raises:
+        ValueError: If no pose could be detected in any frame.
+    """
+    sequence = _extract_landmark_sequence(video_path)
+    if sequence.size == 0:
+        raise ValueError("No pose landmarks detected in any frame of the video")
+    return pool_landmark_sequence(sequence)
