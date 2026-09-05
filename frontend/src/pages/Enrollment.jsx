@@ -2,11 +2,18 @@ import { useState } from 'react'
 import { UserPlus } from 'lucide-react'
 import WebcamCapture from '../components/WebcamCapture'
 import AudioRecorder from '../components/AudioRecorder'
+import FileUpload from '../components/FileUpload'
 
 export default function Enrollment() {
   const [nationalId, setNationalId] = useState('')
   const [fullName, setFullName] = useState('')
-  const [captures, setCaptures] = useState({ face: null, voice: null, palm: null, fingerprint: null })
+  const [captures, setCaptures] = useState({
+    face: null,
+    voice: null,
+    palm: null,
+    gait: null,
+    fingerprint: null,
+  })
 
   const setCapture = (method) => (file) =>
     setCaptures((prev) => ({ ...prev, [method]: file }))
@@ -70,6 +77,12 @@ export default function Enrollment() {
             onCapture={setCapture('fingerprint')}
           />
           <AudioRecorder onRecorded={setCapture('voice')} />
+          <FileUpload
+            label="Gait"
+            description="Upload a short walking video"
+            accept="video/*"
+            onFile={setCapture('gait')}
+          />
         </div>
       </div>
     </div>
