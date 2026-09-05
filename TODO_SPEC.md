@@ -57,11 +57,11 @@ Phase 3: The "Unique AI Improvement" (Backend QA Filter)
 	Goal: Improve response time and accuracy by blocking bad captures before heavy ML processing.
 
 Phase 4: REST API Endpoints (Backend)
-	[ ] TODO 4.1: Create POST /enroll: Accepts user details and 5 multipart form files (images/audio/video). Runs QA filter -> Extracts 5 vectors -> Saves to DB.
+	[x] TODO 4.1: Create POST /enroll: Accepts user details and 5 multipart form files (images/audio/video). Runs QA filter -> Extracts 5 vectors -> Saves to DB.
 
-	[ ] TODO 4.2: Create POST /verify/single: Accepts method type and 1 file. Runs QA filter -> Extracts vector -> Compares using Cosine Similarity against DB -> Returns Match/No Match and Score.
+	[x] TODO 4.2: Create POST /verify/single: Accepts method type and 1 file. Runs QA filter -> Extracts vector -> Compares using Cosine Similarity against DB -> Returns Match/No Match and Score.
 
-	[ ] TODO 4.3: Create POST /verify/fusion: Accepts Face, Voice, and Palm files.
+	[x] TODO 4.3: Create POST /verify/fusion: Accepts Face, Voice, and Palm files.
 
 
 	Sub-task A: Implement Majority Voting logic (2 out of 3).
