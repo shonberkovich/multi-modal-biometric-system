@@ -10,6 +10,8 @@ librosa
 scikit-learn
 python-multipart
 c3d
+requests
+huggingface_hub
 numpy
 pydantic
 soundfile
