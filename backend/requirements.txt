@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+opencv-python
+deepface
+speechbrain
+mediapipe
+librosa
+scikit-learn
+python-multipart
+numpy
+pydantic
+soundfile
+python-dotenv
