@@ -36,15 +36,15 @@ Phase 2: Biometric Feature Extraction Modules (Backend)
 Instruction to AI: For each method, write a Python module that takes raw data (image/audio/video), cleans/crops it, and outputs a normalized feature vector (e.g., 512d).
 
 
-	[ ] TODO 2.1 - Face Module (bio_face.py): Use DeepFace.represent() with model='Facenet512'. Output: 512d vector.
+	[x] TODO 2.1 - Face Module (bio_face.py): Use DeepFace.represent() with model='Facenet512'. Output: 512d vector.
 
-	[ ] TODO 2.2 - Voice Module (bio_voice.py): Use speechbrain/spkrec-ecapa-voxceleb. Pre-processing: Remove silence. Output: speaker embedding vector.
+	[x] TODO 2.2 - Voice Module (bio_voice.py): Use speechbrain/spkrec-ecapa-voxceleb. Pre-processing: Remove silence. Output: speaker embedding vector.
 
-	[ ] TODO 2.3 - Palmprint Module (bio_palm.py): Use MediaPipe Hands to detect palm landmarks, crop the ROI, and pass through a pre-trained MobileNetV2 to extract features.
+	[x] TODO 2.3 - Palmprint Module (bio_palm.py): Use MediaPipe Hands to detect palm landmarks, crop the ROI, and pass through a pre-trained MobileNetV2 to extract features.
 
-	[ ] TODO 2.4 - Gait Module (bio_gait.py): Use MediaPipe Pose on video files to extract joint coordinates over time, flattened into a fixed-size vector via PCA or temporal pooling.
+	[x] TODO 2.4 - Gait Module (bio_gait.py): Use MediaPipe Pose on video files to extract joint coordinates over time, flattened into a fixed-size vector via PCA or temporal pooling.
 
-	[ ] TODO 2.5 - Fingerprint Module (bio_fingerprint.py): Pre-processing: Grayscale, CLAHE, Gabor filter. Pass through a lightweight CNN for vector extraction.
+	[x] TODO 2.5 - Fingerprint Module (bio_fingerprint.py): Pre-processing: Grayscale, CLAHE, Gabor filter. Pass through a lightweight CNN for vector extraction.
 
 Phase 3: The "Unique AI Improvement" (Backend QA Filter)
 	[x] TODO 3.1 - Implement AI Quality Assessment Filter (qa_filter.py):
