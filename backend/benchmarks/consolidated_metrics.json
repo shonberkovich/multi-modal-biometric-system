@@ -1,0 +1,62 @@
+{
+  "generated_at": "2026-09-05T15:12:00+00:00",
+  "n_pairs_requested": 500,
+  "results": {
+    "face": {
+      "accuracy": 0.9566115702479339,
+      "far": 0.044444444444444446,
+      "frr": 0.04247104247104247,
+      "eer": 0.04345774345774346,
+      "threshold": 0.42916447912399264,
+      "n_pairs": 484,
+      "method": "face",
+      "dataset": "LFW (sklearn fetch_lfw_pairs)",
+      "n_pairs_skipped": 16
+    },
+    "voice": {
+      "accuracy": 1.0,
+      "far": 0.0,
+      "frr": 0.0,
+      "eer": 0.0,
+      "threshold": 0.24706677973028895,
+      "n_pairs": 500,
+      "method": "voice",
+      "dataset": "VoxCeleb1 test set (HF mirror, 40 speakers)",
+      "n_pairs_skipped": 0
+    },
+    "palm": {
+      "accuracy": 0.9,
+      "far": 0.1,
+      "frr": 0.1,
+      "eer": 0.1,
+      "threshold": 0.8469798428195552,
+      "n_pairs": 500,
+      "method": "palm",
+      "dataset": "ruofei7/Palmprint_Recognition (CASIA-style, 99 identities)",
+      "n_pairs_skipped": 0
+    },
+    "gait": {
+      "accuracy": 0.52,
+      "far": 0.48,
+      "frr": 0.48,
+      "eer": 0.48,
+      "threshold": 0.9935084789656792,
+      "n_pairs": 500,
+      "method": "gait",
+      "dataset": "ASPset-510 3D joints (archive.org, CC0, 15 subjects)",
+      "n_pairs_skipped": 0
+    },
+    "fingerprint": {
+      "accuracy": 0.888,
+      "far": 0.112,
+      "frr": 0.112,
+      "eer": 0.112,
+      "threshold": 0.9997604054257441,
+      "n_pairs": 500,
+      "method": "fingerprint",
+      "dataset": "SOCOFing (HF mirror, 600 subjects x 10 fingers)",
+      "n_pairs_skipped": 0
+    }
+  },
+  "notes": "Each method's script (backend/benchmarks/eval_*.py) was run independently with n_pairs=500 and its real, individually-verified output copied in here (see the TODO 8.1-8.5 commit messages for per-method verification notes). Re-running `python benchmarks/run_all.py` reproduces this file from scratch by re-running all five benchmarks fresh."
+}
