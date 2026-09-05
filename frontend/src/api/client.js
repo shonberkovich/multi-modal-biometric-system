@@ -31,3 +31,7 @@ export function verifyFusion({ face, voice, palm }) {
   return api.post('/verify/fusion', form)
 }
 
+export function listPersons() {
+  return api.get('/persons')
+}
+
