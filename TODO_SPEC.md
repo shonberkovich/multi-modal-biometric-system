@@ -47,7 +47,7 @@ Instruction to AI: For each method, write a Python module that takes raw data (i
 	[ ] TODO 2.5 - Fingerprint Module (bio_fingerprint.py): Pre-processing: Grayscale, CLAHE, Gabor filter. Pass through a lightweight CNN for vector extraction.
 
 Phase 3: The "Unique AI Improvement" (Backend QA Filter)
-	[ ] TODO 3.1 - Implement AI Quality Assessment Filter (qa_filter.py):
+	[x] TODO 3.1 - Implement AI Quality Assessment Filter (qa_filter.py):
 
 
 	For Images: Calculate Laplacian variance (Blur detection). Fast reject if variance < threshold.
