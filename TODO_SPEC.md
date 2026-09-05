@@ -85,11 +85,11 @@ Phase 6: React Frontend - Enrollment Flow
 	[x] TODO 6.5: On submit, append all files to a FormData object and POST to /enroll. Display success/error toasts based on the Backend QA Filter response.
 
 Phase 7: React Frontend - Verification & Fusion Flows
-	[ ] TODO 7.1: Build SingleVerification.jsx. Let the user select a method from a dropdown, capture the corresponding media, POST to /verify/single, and display a visual "Match / No Match" card with the similarity score.
+	[x] TODO 7.1: Build SingleVerification.jsx. Let the user select a method from a dropdown, capture the corresponding media, POST to /verify/single, and display a visual "Match / No Match" card with the similarity score.
 
-	[ ] TODO 7.2: Build FusionVerification.jsx. Force the user to capture Face, Voice, and Palm sequentially. POST to /verify/fusion and display a split result screen: "Majority Vote Result" vs "Vector Fusion Result".
+	[x] TODO 7.2: Build FusionVerification.jsx. Force the user to capture Face, Voice, and Palm sequentially. POST to /verify/fusion and display a split result screen: "Majority Vote Result" vs "Vector Fusion Result".
 
-	[ ] TODO 7.3: Build Dashboard.jsx. Fetch and display a data table of all enrolled users from the database to track the 20-volunteer requirement.
+	[x] TODO 7.3: Build Dashboard.jsx. Fetch and display a data table of all enrolled users from the database to track the 20-volunteer requirement.
 
 Phase 8: Public Dataset Benchmarking (FULLY AUTOMATED)
 CRITICAL INSTRUCTION TO AI: You MUST write standalone Python scripts that AUTOMATICALLY fetch the required datasets. The user WILL NOT manually download any ZIP files, will not navigate to Kaggle, and will not manually create folders. Your code must handle everything autonomously upon execution.
