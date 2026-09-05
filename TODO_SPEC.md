@@ -74,15 +74,15 @@ Phase 5: Frontend React Setup & Architecture
 	[x] TODO 5.2: Setup Tailwind CSS configuration and wrap the app in a nice layout with a Sidebar navigation (Enrollment, Single Verification, Fusion Verification, Dashboard).
 
 Phase 6: React Frontend - Enrollment Flow
-	[ ] TODO 6.1: Build Enrollment.jsx. Include a form for National ID and Full Name.
+	[x] TODO 6.1: Build Enrollment.jsx. Include a form for National ID and Full Name.
 
-	[ ] TODO 6.2: Create a Capture component using react-webcam for taking Face, Palm, and Fingerprint photos directly from the browser.
+	[x] TODO 6.2: Create a Capture component using react-webcam for taking Face, Palm, and Fingerprint photos directly from the browser.
 
-	[ ] TODO 6.3: Create an Audio component using react-media-recorder to record Voice directly from the browser.
+	[x] TODO 6.3: Create an Audio component using react-media-recorder to record Voice directly from the browser.
 
-	[ ] TODO 6.4: Create a File Upload component for the Gait video.
+	[x] TODO 6.4: Create a File Upload component for the Gait video.
 
-	[ ] TODO 6.5: On submit, append all files to a FormData object and POST to /enroll. Display success/error toasts based on the Backend QA Filter response.
+	[x] TODO 6.5: On submit, append all files to a FormData object and POST to /enroll. Display success/error toasts based on the Backend QA Filter response.
 
 Phase 7: React Frontend - Verification & Fusion Flows
 	[ ] TODO 7.1: Build SingleVerification.jsx. Let the user select a method from a dropdown, capture the corresponding media, POST to /verify/single, and display a visual "Match / No Match" card with the similarity score.
