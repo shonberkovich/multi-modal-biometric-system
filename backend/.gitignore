@@ -6,5 +6,6 @@ __pycache__/
 pip_install.log
 .env
 benchmarks/tmp/
+benchmarks/*_run.log
 models/
 pretrained_models/
