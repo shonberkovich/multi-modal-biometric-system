@@ -57,7 +57,16 @@ For multi-step tasks, state a brief plan:
 2. [Step] → verify: [check]
 3. [Step] → verify: [check]
 ```
+## 5. Premium, Beautiful & Uncompromisingly Responsive UI
 
+**Mobile-first. Fluid layouts. High-end visual polish.**
+
+When implementing frontend components and styling:
+- **Mobile-First & Fluid:** Design base layouts for mobile first, then scale up. Use Flexbox/Grid and relative units. The UI must adapt flawlessly to *any* device size with zero broken layouts or horizontal scrolling.
+- **Premium "Wow" Aesthetics:** Default to visually stunning, highly polished interfaces. Apply modern design systems: elegant card layouts, glassmorphism, subtle mesh gradients, soft layered drop-shadows, and smooth rounded corners.
+- **Micro-interactions & Smoothness:** The UI must feel alive. Always include smooth CSS transitions (e.g., `transition-all duration-300 ease-in-out`), satisfying hover/active/focus states on all clickable elements, and gentle reveal animations for new content.
+- **Impeccable Typography & Whitespace:** Give elements plenty of room to breathe. Use generous, consistent padding/margins. Implement strict typographic hierarchy, utilizing varied font weights, tracking, and refined text colors (e.g., slate/gray instead of harsh pure black).
+- **Vibrant & Cohesive Colors:** Use sophisticated, harmonious color palettes. Implement modern glowing accents or soft background gradients to guide the user's eye, ensuring the final result looks expensive and professional.
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
 ---
