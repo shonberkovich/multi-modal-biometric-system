@@ -13,9 +13,9 @@ Stack:
 	Database: SQLite/PostgreSQL, SQLAlchemy.
 
 Phase 1: Backend Setup & Database ORM (Python/FastAPI)
-	[ ] TODO 1.1: Initialize a Python virtual environment in a backend/ folder and install requirements (fastapi, uvicorn, sqlalchemy, opencv-python, deepface, speechbrain, mediapipe, librosa, scikit-learn, python-multipart).
+	[x] TODO 1.1: Initialize a Python virtual environment in a backend/ folder and install requirements (fastapi, uvicorn, sqlalchemy, opencv-python, deepface, speechbrain, mediapipe, librosa, scikit-learn, python-multipart).
 
-	[ ] TODO 1.2: Create database.py and implement the exact required schema using SQLAlchemy:
+	[x] TODO 1.2: Create database.py and implement the exact required schema using SQLAlchemy:
 
 
 	Table Person_directory: random_id (PK, UUID), created_at (DateTime).
@@ -28,9 +28,9 @@ Phase 1: Backend Setup & Database ORM (Python/FastAPI)
 
 	Table Method_retrieval_vectors: random_id (PK), method (PK), vector_type (PK), vector_kind (String), dim (Integer), distance_metric (String), metadata_json (JSON), vector_512 (ARRAY/JSON), vector_768 (ARRAY/JSON), vector_blob (LargeBinary).
 
-	[ ] TODO 1.3: Create CRUD utility functions (crud.py) to handle inserts and vector retrievals.
+	[x] TODO 1.3: Create CRUD utility functions (crud.py) to handle inserts and vector retrievals.
 
-	[ ] TODO 1.4: Setup basic FastAPI main.py with CORS middleware enabled to allow requests from localhost:5173 (React Vite default port).
+	[x] TODO 1.4: Setup basic FastAPI main.py with CORS middleware enabled to allow requests from localhost:5173 (React Vite default port).
 
 Phase 2: Biometric Feature Extraction Modules (Backend)
 Instruction to AI: For each method, write a Python module that takes raw data (image/audio/video), cleans/crops it, and outputs a normalized feature vector (e.g., 512d).
