@@ -69,9 +69,9 @@ Phase 4: REST API Endpoints (Backend)
 	Sub-task B: Implement Weighted Vector Fusion (V_fused=[w_1 V_f,w_2 V_v,w_3 V_p ]) and distance calculation.
 
 Phase 5: Frontend React Setup & Architecture
-	[ ] TODO 5.1: Initialize React app in frontend/ using Vite (npm create vite@latest . --template react) and install dependencies (tailwindcss, axios, react-router-dom, react-webcam, react-media-recorder, lucide-react).
+	[x] TODO 5.1: Initialize React app in frontend/ using Vite (npm create vite@latest . --template react) and install dependencies (tailwindcss, axios, react-router-dom, react-webcam, react-media-recorder, lucide-react).
 
-	[ ] TODO 5.2: Setup Tailwind CSS configuration and wrap the app in a nice layout with a Sidebar navigation (Enrollment, Single Verification, Fusion Verification, Dashboard).
+	[x] TODO 5.2: Setup Tailwind CSS configuration and wrap the app in a nice layout with a Sidebar navigation (Enrollment, Single Verification, Fusion Verification, Dashboard).
 
 Phase 6: React Frontend - Enrollment Flow
 	[ ] TODO 6.1: Build Enrollment.jsx. Include a form for National ID and Full Name.
