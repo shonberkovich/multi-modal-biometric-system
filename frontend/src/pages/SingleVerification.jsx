@@ -142,7 +142,11 @@ export default function SingleVerification() {
               </div>
             </fieldset>
 
-            <div className="mt-6">{renderCapture()}</div>
+            {/* Keyed by method so switching remounts the capture card instead of
+                carrying the previous method's captured preview over. */}
+            <div key={method} className="mt-6">
+              {renderCapture()}
+            </div>
 
             <div className="mt-6">
               <button
