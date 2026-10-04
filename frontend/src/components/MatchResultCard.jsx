@@ -1,54 +1,60 @@
-import { ShieldCheck, ShieldX } from 'lucide-react'
+const RADIUS = 50
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 
 /**
- * Visual Match / No Match result card with a similarity-score bar.
+ * Visual Match / No Match verdict card with a radial similarity-score gauge.
  */
 export default function MatchResultCard({ title, matched, score, identity }) {
   const pct = Math.max(0, Math.min(1, score)) * 100
 
   return (
-    <div
-      className={`rounded-2xl border p-6 shadow-sm backdrop-blur-xl transition-all duration-300 ease-in-out ${
-        matched
-          ? 'border-emerald-200 bg-emerald-50/80 shadow-emerald-900/5'
-          : 'border-red-200 bg-red-50/80 shadow-red-900/5'
-      }`}
-    >
-      <div className="flex items-center gap-3">
-        {matched ? (
-          <ShieldCheck size={28} className="text-emerald-500" />
-        ) : (
-          <ShieldX size={28} className="text-red-500" />
-        )}
-        <div>
-          {title && <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{title}</p>}
-          <p className={`text-lg font-bold ${matched ? 'text-emerald-700' : 'text-red-700'}`}>
-            {matched ? 'Match' : 'No Match'}
+    <div className="panel verdict overflow-hidden p-5 sm:p-7" data-tone={matched ? 'ok' : 'fail'}>
+      <div className="verdict-glow" aria-hidden="true" />
+      <div className="scanlines absolute inset-0 -z-10 rounded-[inherit]" aria-hidden="true" />
+
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0 pt-1">
+          <p className="hud-label">{title || 'Verdict'}</p>
+          <p className="verdict-word mt-4">{matched ? 'Match' : 'No Match'}</p>
+          <p className="verdict-code mt-3 font-mono text-[10px] uppercase tracking-[0.18em]">
+            {matched ? 'Identity confirmed' : 'No identity above threshold'}
           </p>
+        </div>
+
+        <div className="relative h-28 w-28 shrink-0 sm:h-32 sm:w-32">
+          <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90" aria-hidden="true">
+            <circle cx="60" cy="60" r="58" className="gauge-ticks" />
+            <circle cx="60" cy="60" r={RADIUS} className="gauge-track" />
+            <circle
+              cx="60"
+              cy="60"
+              r={RADIUS}
+              className="gauge-value"
+              strokeDasharray={CIRCUMFERENCE}
+              style={{ '--circ': CIRCUMFERENCE, '--offset': CIRCUMFERENCE * (1 - pct / 100) }}
+            />
+          </svg>
+          <div className="absolute inset-0 grid place-items-center text-center">
+            <div>
+              <p className="font-mono text-base font-bold tracking-tight text-ink sm:text-lg">
+                {(score * 100).toFixed(1)}%
+              </p>
+              <p className="hud-label mt-0.5 text-[8.5px]">Similarity</p>
+            </div>
+          </div>
         </div>
       </div>
 
       {identity && (matched ? identity.full_name : null) && (
-        <p className="mt-2 text-sm text-slate-600">
-          Identified as <span className="font-semibold text-slate-900">{identity.full_name}</span>
-          {identity.national_id ? ` (${identity.national_id})` : ''}
-        </p>
+        <div className="identity-plate mt-6">
+          <p className="hud-label">Identified as</p>
+          <p className="mt-1.5 text-xl font-semibold tracking-tight text-ink sm:text-2xl">{identity.full_name}</p>
+          <div className="mt-2.5 flex flex-wrap gap-x-5 gap-y-1 font-mono text-[11px] text-ink-2">
+            {identity.national_id ? <span>NID {identity.national_id}</span> : null}
+            {identity.random_id ? <span>UID {identity.random_id.slice(0, 13)}</span> : null}
+          </div>
+        </div>
       )}
-
-      <div className="mt-4">
-        <div className="flex items-center justify-between text-xs font-medium text-slate-500">
-          <span>Similarity score</span>
-          <span>{(score * 100).toFixed(1)}%</span>
-        </div>
-        <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-white/70">
-          <div
-            className={`h-full rounded-full transition-all duration-500 ease-in-out ${
-              matched ? 'bg-emerald-500' : 'bg-red-400'
-            }`}
-            style={{ width: `${pct}%` }}
-          />
-        </div>
-      </div>
     </div>
   )
 }
