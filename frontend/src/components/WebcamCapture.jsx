@@ -32,43 +32,54 @@ export default function WebcamCapture({ label, description, onCapture }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white/80 shadow-sm shadow-slate-900/5 backdrop-blur-xl transition-all duration-300 ease-in-out hover:shadow-md">
-      <div className="flex items-center justify-between px-4 pt-4">
-        <div>
-          <p className="text-sm font-semibold text-slate-900">{label}</p>
-          <p className="text-xs text-slate-500">{description}</p>
+    <div className="panel panel-lift flex h-full flex-col p-2.5">
+      <div className="flex items-start justify-between gap-3 px-2.5 pb-3.5 pt-2.5">
+        <div className="min-w-0">
+          <p className="hud-label">Optical sensor</p>
+          <p className="card-title mt-1.5">{label}</p>
+          <p className="mt-0.5 text-[13px] text-ink-2">{description}</p>
         </div>
-        {preview && <CheckCircle2 size={18} className="text-emerald-500" />}
+        {preview ? (
+          <span className="chip chip-ok">
+            <CheckCircle2 size={12} strokeWidth={2.5} /> Locked
+          </span>
+        ) : (
+          <span className="chip">
+            <span className="dot-live" /> Live
+          </span>
+        )}
       </div>
 
-      <div className="relative mt-3 aspect-video w-full overflow-hidden bg-slate-900">
+      <div className="cam-viewport w-full">
         {preview ? (
-          <img src={preview} alt={`${label} capture`} className="h-full w-full object-cover" />
+          <img src={preview} alt={`${label} capture`} className="cam-media" />
         ) : (
           <Webcam
             ref={webcamRef}
             audio={false}
             screenshotFormat="image/jpeg"
-            className="h-full w-full object-cover"
+            className="cam-media"
           />
         )}
+        <div className="cam-grid" aria-hidden="true" />
+        <div className="cam-vignette" aria-hidden="true" />
+        {!preview && <div className="scan-laser" aria-hidden="true" />}
+        {!preview && <div className="cam-reticle" aria-hidden="true" />}
+        <div className={`hud-corners ${preview ? 'is-locked' : ''}`} aria-hidden="true" />
+        {preview && <div className="cam-flash" aria-hidden="true" />}
+        <div className="cam-readout" aria-hidden="true">
+          <span>{preview ? 'Frame locked' : 'Rec · live'}</span>
+          <span>{label}</span>
+        </div>
       </div>
 
-      <div className="p-4">
+      <div className="px-1 pb-1 pt-3">
         {preview ? (
-          <button
-            type="button"
-            onClick={retake}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm font-medium text-slate-700 transition-all duration-200 ease-in-out hover:bg-slate-50 active:scale-[0.98]"
-          >
+          <button type="button" onClick={retake} className="btn btn-ghost w-full">
             <RotateCcw size={16} /> Retake
           </button>
         ) : (
-          <button
-            type="button"
-            onClick={capture}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-3.5 py-2.5 text-sm font-medium text-white shadow-md shadow-brand-500/30 transition-all duration-200 ease-in-out hover:from-brand-600 hover:to-brand-700 active:scale-[0.98]"
-          >
+          <button type="button" onClick={capture} className="btn btn-primary w-full">
             <Camera size={16} /> Capture
           </button>
         )}

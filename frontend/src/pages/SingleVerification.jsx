@@ -1,10 +1,13 @@
 import { useState } from 'react'
-import { ScanFace, Loader2, Send } from 'lucide-react'
+import { ScanFace, Loader2, Send, AudioLines, Hand, Footprints, Fingerprint } from 'lucide-react'
 import WebcamCapture from '../components/WebcamCapture'
 import AudioRecorder from '../components/AudioRecorder'
 import FileUpload from '../components/FileUpload'
 import MatchResultCard from '../components/MatchResultCard'
 import Toast from '../components/Toast'
+import PageHeader from '../components/PageHeader'
+import Reveal from '../components/Reveal'
+import BiometricMesh from '../components/BiometricMesh'
 import { verifySingle } from '../api/client'
 
 const METHODS = [
@@ -14,6 +17,14 @@ const METHODS = [
   { value: 'gait', label: 'Gait' },
   { value: 'fingerprint', label: 'Fingerprint' },
 ]
+
+const METHOD_ICONS = {
+  face: ScanFace,
+  voice: AudioLines,
+  palm: Hand,
+  gait: Footprints,
+  fingerprint: Fingerprint,
+}
 
 export default function SingleVerification() {
   const [method, setMethod] = useState('face')
@@ -69,59 +80,117 @@ export default function SingleVerification() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Single Verification</h1>
-      <p className="mt-2 text-sm text-slate-500">Verify identity using a single biometric method.</p>
-
-      <div className="mt-8 rounded-2xl border border-slate-200/70 bg-white/80 p-6 shadow-sm shadow-slate-900/5 backdrop-blur-xl sm:p-8">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-md shadow-brand-500/30">
-            <ScanFace size={18} />
+      <PageHeader
+        index="02"
+        eyebrow="1:N identification"
+        title={
+          <>
+            Single <span className="text-holo">verification</span>
+          </>
+        }
+        description="Verify identity using a single biometric method."
+      >
+        <dl className="flex shrink-0 gap-8">
+          <div>
+            <dt className="hud-label">Probe</dt>
+            <dd className="stat-value mt-2 capitalize">{method}</dd>
           </div>
-          <h2 className="text-lg font-semibold text-slate-900">Choose a method</h2>
-        </div>
+          <div>
+            <dt className="hud-label">Match</dt>
+            <dd className="stat-value mt-2">1:N</dd>
+          </div>
+        </dl>
+      </PageHeader>
 
-        <label className="mt-6 block max-w-xs">
-          <span className="text-sm font-medium text-slate-700">Biometric method</span>
-          <select
-            value={method}
-            onChange={(e) => changeMethod(e.target.value)}
-            className="mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm transition-all duration-200 ease-in-out focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/15"
-          >
-            {METHODS.map((m) => (
-              <option key={m.value} value={m.value}>
-                {m.label}
-              </option>
-            ))}
-          </select>
-        </label>
+      <div className="mt-10 grid gap-4 sm:mt-14 sm:gap-5 xl:grid-cols-12 xl:items-start">
+        <Reveal className="xl:col-span-7" delay={60}>
+          <section className="panel p-5 sm:p-7">
+            <div className="flex items-center gap-3.5">
+              <span className="icon-tile">
+                <ScanFace size={18} />
+              </span>
+              <div>
+                <p className="hud-label">Probe console</p>
+                <h2 className="card-title mt-1 text-lg">Choose a method</h2>
+              </div>
+            </div>
 
-        <div className="mt-6 max-w-sm">{renderCapture()}</div>
+            <fieldset className="mt-7">
+              <legend className="field-label">Biometric method</legend>
+              <div className="grid grid-cols-5 gap-1 sm:gap-2.5">
+                {METHODS.map((m) => {
+                  const Icon = METHOD_ICONS[m.value]
+                  return (
+                    <label key={m.value} className="modality-option">
+                      <input
+                        type="radio"
+                        name="method"
+                        value={m.value}
+                        checked={method === m.value}
+                        onChange={(e) => changeMethod(e.target.value)}
+                        className="sr-only"
+                      />
+                      <span className="modality-option-body">
+                        <Icon size={20} strokeWidth={1.75} />
+                        <span className="w-full truncate text-center text-[9.5px] font-medium tracking-[-0.01em] sm:text-xs sm:tracking-normal">
+                          {m.label}
+                        </span>
+                      </span>
+                    </label>
+                  )
+                })}
+              </div>
+            </fieldset>
 
-        <div className="mt-6">
-          <button
-            type="button"
-            disabled={!file || submitting}
-            onClick={handleSubmit}
-            className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-brand-500/30 transition-all duration-200 ease-in-out hover:from-brand-600 hover:to-brand-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-300 disabled:to-slate-300 disabled:shadow-none"
-          >
-            {submitting ? (
-              <>
-                <Loader2 size={16} className="animate-spin" /> Verifying...
-              </>
-            ) : (
-              <>
-                <Send size={16} /> Verify
-              </>
-            )}
-          </button>
-        </div>
+            <div className="mt-6">{renderCapture()}</div>
+
+            <div className="mt-6">
+              <button
+                type="button"
+                disabled={!file || submitting}
+                onClick={handleSubmit}
+                className="btn btn-primary btn-lg w-full sm:w-auto"
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" /> Verifying...
+                  </>
+                ) : (
+                  <>
+                    <Send size={16} /> Verify
+                  </>
+                )}
+              </button>
+            </div>
+          </section>
+        </Reveal>
+
+        <Reveal className="xl:sticky xl:top-24 xl:col-span-5" delay={140}>
+          {result ? (
+            <MatchResultCard matched={result.matched} score={result.score} identity={result} />
+          ) : (
+            <section className="panel relative min-h-[380px] overflow-hidden xl:min-h-[520px]">
+              <div className="scanlines absolute inset-0" aria-hidden="true" />
+              <BiometricMesh className="absolute inset-0 h-full w-full" busy={submitting} />
+              <div className="pointer-events-none absolute inset-x-5 top-5 flex items-start justify-between gap-3 sm:inset-x-6 sm:top-6">
+                <div>
+                  <p className="hud-label">Match analysis</p>
+                  <p className="mt-1.5 font-mono text-[11px] text-ink-2">
+                    {submitting ? 'Comparing against enrolled vectors' : 'Awaiting probe'}
+                  </p>
+                </div>
+                <span className={`chip ${submitting ? '' : 'chip-idle'}`}>
+                  {submitting && <span className="dot-live" />} {submitting ? 'Scanning' : 'Idle'}
+                </span>
+              </div>
+              <div className="pointer-events-none absolute inset-x-5 bottom-5 flex items-end justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-ink-3 sm:inset-x-6 sm:bottom-6">
+                <span>Modality::{method}</span>
+                <span>{file ? 'Probe ready' : 'No probe'}</span>
+              </div>
+            </section>
+          )}
+        </Reveal>
       </div>
-
-      {result && (
-        <div className="mt-6 max-w-sm">
-          <MatchResultCard matched={result.matched} score={result.score} identity={result} />
-        </div>
-      )}
 
       {toast && <Toast {...toast} onDismiss={() => setToast(null)} />}
     </div>

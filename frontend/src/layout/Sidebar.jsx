@@ -1,12 +1,15 @@
 import { NavLink } from 'react-router-dom'
-import { Fingerprint, UserPlus, ScanFace, Layers, LayoutDashboard } from 'lucide-react'
+import { UserPlus, ScanFace, Layers, LayoutDashboard, ArrowUpRight, X } from 'lucide-react'
+import BrandMark from '../components/BrandMark'
 
 const links = [
-  { to: '/enrollment', label: 'Enrollment', icon: UserPlus },
-  { to: '/verify/single', label: 'Single Verification', icon: ScanFace },
-  { to: '/verify/fusion', label: 'Fusion Verification', icon: Layers },
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/enrollment', label: 'Enrollment', hint: 'Register identity', code: '01', icon: UserPlus },
+  { to: '/verify/single', label: 'Single Verification', hint: '1 modality · 1:N', code: '02', icon: ScanFace },
+  { to: '/verify/fusion', label: 'Fusion Verification', hint: 'Face · Voice · Palm', code: '03', icon: Layers },
+  { to: '/dashboard', label: 'Dashboard', hint: 'Enrolled registry', code: '04', icon: LayoutDashboard },
 ]
+
+const MODALITIES = ['Face', 'Voice', 'Palm', 'Gait', 'Print']
 
 export default function Sidebar({ open, onClose }) {
   return (
@@ -14,50 +17,79 @@ export default function Sidebar({ open, onClose }) {
       {/* Mobile backdrop */}
       {open && (
         <div
-          className="fixed inset-0 z-30 bg-slate-900/40 backdrop-blur-sm md:hidden"
+          className="fade-in fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
           onClick={onClose}
         />
       )}
 
       <aside
-        className={`fixed z-40 inset-y-0 left-0 w-64 transform transition-transform duration-300 ease-in-out
-          md:relative md:translate-x-0
-          ${open ? 'translate-x-0' : '-translate-x-full'}
-          flex flex-col bg-white/70 backdrop-blur-xl border-r border-slate-200/70 shadow-xl shadow-slate-900/5`}
+        className={`fixed inset-y-0 left-0 z-50 w-[min(19rem,88vw)] p-3 transition-transform duration-500 ease-out-expo
+          lg:sticky lg:top-0 lg:z-auto lg:h-screen lg:w-[18.5rem] lg:shrink-0 lg:translate-x-0
+          ${open ? 'translate-x-0' : '-translate-x-full'}`}
       >
-        <div className="flex items-center gap-3 px-6 py-6">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-lg shadow-brand-500/30">
-            <Fingerprint size={22} />
+        <div className="panel panel-strong flex h-full flex-col overflow-hidden">
+          <div className="flex items-center gap-3 px-5 pb-6 pt-6">
+            <span className="brand-tile h-11 w-11">
+              <BrandMark className="h-7 w-7" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="font-display text-[15px] font-semibold tracking-tight text-ink">BioFusion</p>
+              <p className="hud-label mt-1 text-[9.5px]">Multi-modal biometrics</p>
+            </div>
+            <button onClick={onClose} className="icon-btn h-9 w-9 lg:hidden" aria-label="Close navigation">
+              <X size={16} />
+            </button>
           </div>
-          <div>
-            <p className="text-sm font-semibold tracking-tight text-slate-900">BioFusion</p>
-            <p className="text-xs text-slate-500">Multi-modal biometrics</p>
+
+          <div className="mx-5 mb-4 flex items-center gap-2">
+            <span className="hud-label text-[9.5px]">Modules</span>
+            <span className="hud-rule" />
           </div>
-        </div>
 
-        <nav className="flex-1 space-y-1 px-3">
-          {links.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              onClick={onClose}
-              className={({ isActive }) =>
-                `group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ease-in-out
-                ${
-                  isActive
-                    ? 'bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-md shadow-brand-500/30'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                }`
-              }
-            >
-              <Icon size={18} className="shrink-0" />
-              <span>{label}</span>
-            </NavLink>
-          ))}
-        </nav>
+          <nav className="flex-1 space-y-1.5 overflow-y-auto px-3">
+            {links.map(({ to, label, hint, code, icon: Icon }) => (
+              <NavLink
+                key={to}
+                to={to}
+                onClick={onClose}
+                className={({ isActive }) => `nav-item group ${isActive ? 'is-active' : ''}`}
+              >
+                <span className="nav-code">{code}</span>
+                <span className="nav-icon">
+                  <Icon size={17} strokeWidth={1.75} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[13.5px] font-medium tracking-tight">{label}</span>
+                  <span className="mt-0.5 block truncate font-mono text-[9.5px] uppercase tracking-[0.08em] text-ink-3">
+                    {hint}
+                  </span>
+                </span>
+                <ArrowUpRight size={14} className="nav-arrow" />
+              </NavLink>
+            ))}
+          </nav>
 
-        <div className="px-6 py-5 text-xs text-slate-400">
-          © {new Date().getFullYear()} Biometric System
+          <div className="border-t border-line px-5 pb-5 pt-5">
+            <p className="hud-label text-[9.5px]">Modality array</p>
+            <div className="mt-3 grid grid-cols-5 gap-1.5">
+              {MODALITIES.map((name, i) => (
+                <div
+                  key={name}
+                  className="flex flex-col items-center gap-2 rounded-xl border border-line bg-[var(--surface-sunken)] px-1 py-2.5"
+                >
+                  <span className="eq" aria-hidden="true">
+                    {[0, 1, 2].map((bar) => (
+                      <i key={bar} style={{ '--i': i * 3 + bar }} />
+                    ))}
+                  </span>
+                  <span className="font-mono text-[8.5px] uppercase tracking-[0.08em] text-ink-3">{name}</span>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 font-mono text-[10px] tracking-[0.12em] text-ink-3">
+              © {new Date().getFullYear()} Biometric System
+            </p>
+          </div>
         </div>
       </aside>
     </>

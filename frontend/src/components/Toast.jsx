@@ -2,8 +2,8 @@ import { useEffect } from 'react'
 import { CheckCircle2, XCircle, X } from 'lucide-react'
 
 /**
- * Self-contained toast notification, fixed to the bottom-right of the
- * viewport. Auto-dismisses after `duration` ms.
+ * Self-contained toast notification (top on mobile, bottom-right from sm up).
+ * Auto-dismisses after `duration` ms.
  */
 export default function Toast({ type = 'success', message, onDismiss, duration = 5000 }) {
   useEffect(() => {
@@ -16,25 +16,24 @@ export default function Toast({ type = 'success', message, onDismiss, duration =
   return (
     <div
       role="alert"
-      className={`animate-toast-in fixed bottom-6 right-6 z-50 flex max-w-sm items-start gap-3 rounded-2xl border p-4 shadow-lg backdrop-blur-xl ${
-        isSuccess
-          ? 'border-emerald-200 bg-emerald-50/95 text-emerald-800'
-          : 'border-red-200 bg-red-50/95 text-red-800'
-      }`}
+      data-tone={isSuccess ? 'ok' : 'fail'}
+      className="toast fixed inset-x-4 top-20 z-[60] sm:inset-x-auto sm:bottom-6 sm:right-6 sm:top-auto sm:w-[25rem]"
     >
-      {isSuccess ? (
-        <CheckCircle2 size={20} className="mt-0.5 shrink-0 text-emerald-500" />
-      ) : (
-        <XCircle size={20} className="mt-0.5 shrink-0 text-red-500" />
-      )}
-      <p className="text-sm font-medium leading-snug">{message}</p>
-      <button
-        onClick={onDismiss}
-        className="ml-auto shrink-0 rounded-lg p-1 opacity-60 transition-opacity duration-200 ease-in-out hover:opacity-100"
-        aria-label="Dismiss"
-      >
-        <X size={16} />
-      </button>
+      <div className="flex items-start gap-3 p-4">
+        <span className="toast-icon">
+          {isSuccess ? <CheckCircle2 size={18} /> : <XCircle size={18} />}
+        </span>
+        <div className="min-w-0 flex-1 pt-0.5">
+          <p className="hud-label" style={{ color: 'rgb(var(--tone))' }}>
+            {isSuccess ? 'System · Success' : 'System · Error'}
+          </p>
+          <p className="mt-1 text-sm font-medium leading-snug text-ink">{message}</p>
+        </div>
+        <button onClick={onDismiss} className="icon-btn h-8 w-8" aria-label="Dismiss">
+          <X size={15} />
+        </button>
+      </div>
+      <span className="toast-timer" style={{ animationDuration: `${duration}ms` }} />
     </div>
   )
 }

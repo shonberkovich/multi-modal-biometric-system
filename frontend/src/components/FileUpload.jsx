@@ -22,13 +22,20 @@ export default function FileUpload({ label, description, accept, onFile }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white/80 shadow-sm shadow-slate-900/5 backdrop-blur-xl transition-all duration-300 ease-in-out hover:shadow-md">
-      <div className="flex items-center justify-between px-4 pt-4">
-        <div>
-          <p className="text-sm font-semibold text-slate-900">{label}</p>
-          <p className="text-xs text-slate-500">{description}</p>
+    <div className="panel panel-lift flex h-full flex-col p-2.5">
+      <div className="flex items-start justify-between gap-3 px-2.5 pb-3.5 pt-2.5">
+        <div className="min-w-0">
+          <p className="hud-label">Media input</p>
+          <p className="card-title mt-1.5">{label}</p>
+          <p className="mt-0.5 text-[13px] text-ink-2">{description}</p>
         </div>
-        {file && <CheckCircle2 size={18} className="text-emerald-500" />}
+        {file ? (
+          <span className="chip chip-ok">
+            <CheckCircle2 size={12} strokeWidth={2.5} /> Locked
+          </span>
+        ) : (
+          <span className="chip chip-idle">Upload</span>
+        )}
       </div>
 
       <div
@@ -43,23 +50,33 @@ export default function FileUpload({ label, description, accept, onFile }) {
           handleFile(e.dataTransfer.files?.[0])
         }}
         onClick={() => !file && inputRef.current?.click()}
-        className={`m-4 flex aspect-video cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed text-center transition-all duration-200 ease-in-out ${
-          dragOver
-            ? 'border-brand-500 bg-brand-50'
-            : file
-              ? 'border-emerald-300 bg-emerald-50'
-              : 'border-slate-200 bg-slate-50 hover:border-brand-300 hover:bg-brand-50/40'
-        }`}
+        data-state={dragOver ? 'drag' : file ? 'done' : 'idle'}
+        className="dropzone"
       >
+        <svg className="dropzone-border" aria-hidden="true">
+          <rect />
+        </svg>
         {file ? (
           <>
-            <Film size={28} className="text-emerald-500" />
-            <p className="max-w-[80%] truncate text-xs font-medium text-slate-700">{file.name}</p>
+            <span className="drop-orb">
+              <Film size={26} />
+            </span>
+            <div className="max-w-[85%]">
+              <p className="truncate font-mono text-xs font-bold text-ink">{file.name}</p>
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-ok">File loaded</p>
+            </div>
           </>
         ) : (
           <>
-            <UploadCloud size={28} className="text-slate-400" />
-            <p className="text-xs text-slate-500">Drag & drop, or click to browse</p>
+            <span className="drop-orb">
+              <UploadCloud size={26} />
+            </span>
+            <div>
+              <p className="text-sm font-medium text-ink">Drag & drop, or click to browse</p>
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-ink-3">
+                {accept ? accept.replace('/*', '') : 'any'} file
+              </p>
+            </div>
           </>
         )}
       </div>
@@ -73,12 +90,8 @@ export default function FileUpload({ label, description, accept, onFile }) {
       />
 
       {file && (
-        <div className="p-4 pt-0">
-          <button
-            type="button"
-            onClick={reset}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm font-medium text-slate-700 transition-all duration-200 ease-in-out hover:bg-slate-50 active:scale-[0.98]"
-          >
+        <div className="px-1 pb-1 pt-3">
+          <button type="button" onClick={reset} className="btn btn-ghost w-full">
             <RotateCcw size={16} /> Replace
           </button>
         </div>

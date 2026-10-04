@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { useReactMediaRecorder } from 'react-media-recorder'
 import { Mic, Square, CheckCircle2, RotateCcw } from 'lucide-react'
 
+// Static bar heights for the decorative waveform.
+const BARS = Array.from({ length: 28 }, (_, i) => 0.3 + 0.7 * Math.abs(Math.sin(i * 1.7)))
+
 /**
  * Voice capture card. Calls onRecorded(File) once a recording is stopped.
  */
@@ -26,52 +29,67 @@ export default function AudioRecorder({ onRecorded }) {
   const isRecording = status === 'recording'
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white/80 shadow-sm shadow-slate-900/5 backdrop-blur-xl transition-all duration-300 ease-in-out hover:shadow-md">
-      <div className="flex items-center justify-between px-4 pt-4">
-        <div>
-          <p className="text-sm font-semibold text-slate-900">Voice</p>
-          <p className="text-xs text-slate-500">Say a short phrase clearly</p>
+    <div className="panel panel-lift flex h-full flex-col p-2.5">
+      <div className="flex items-start justify-between gap-3 px-2.5 pb-3.5 pt-2.5">
+        <div className="min-w-0">
+          <p className="hud-label">Acoustic sensor</p>
+          <p className="card-title mt-1.5">Voice</p>
+          <p className="mt-0.5 text-[13px] text-ink-2">Say a short phrase clearly</p>
         </div>
-        {recordedUrl && <CheckCircle2 size={18} className="text-emerald-500" />}
-      </div>
-
-      <div className="mt-3 flex items-center justify-center px-4 py-6">
         {recordedUrl ? (
-          <audio controls src={recordedUrl} className="w-full" />
+          <span className="chip chip-ok">
+            <CheckCircle2 size={12} strokeWidth={2.5} /> Locked
+          </span>
+        ) : isRecording ? (
+          <span className="chip chip-fail">
+            <span className="dot-live" /> Rec
+          </span>
         ) : (
-          <div
-            className={`flex h-16 w-16 items-center justify-center rounded-full transition-all duration-300 ease-in-out ${
-              isRecording ? 'animate-pulse bg-red-100 text-red-500' : 'bg-slate-100 text-slate-400'
-            }`}
-          >
-            <Mic size={26} />
-          </div>
+          <span className="chip chip-idle">Standby</span>
         )}
       </div>
 
-      <div className="p-4">
+      <div
+        className="voice-stage flex min-h-[11.5rem] flex-1 flex-col items-center justify-center gap-6 px-4 py-8"
+        data-state={recordedUrl ? 'done' : isRecording ? 'rec' : 'idle'}
+      >
         {recordedUrl ? (
-          <button
-            type="button"
-            onClick={retake}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm font-medium text-slate-700 transition-all duration-200 ease-in-out hover:bg-slate-50 active:scale-[0.98]"
-          >
+          <>
+            <div className="wave" aria-hidden="true">
+              {BARS.map((h, i) => (
+                <span key={i} style={{ '--h': h, '--i': i }} />
+              ))}
+            </div>
+            <audio controls src={recordedUrl} className="w-full" />
+          </>
+        ) : (
+          <>
+            <div className="mic-orb">
+              <Mic size={26} />
+            </div>
+            <div className="wave" aria-hidden="true">
+              {BARS.map((h, i) => (
+                <span key={i} style={{ '--h': h, '--i': i }} />
+              ))}
+            </div>
+          </>
+        )}
+        <span className="absolute left-4 top-3.5 font-mono text-[9.5px] uppercase tracking-[0.18em] text-ink-3">
+          {status.replace(/_/g, ' ')}
+        </span>
+      </div>
+
+      <div className="px-1 pb-1 pt-3">
+        {recordedUrl ? (
+          <button type="button" onClick={retake} className="btn btn-ghost w-full">
             <RotateCcw size={16} /> Re-record
           </button>
         ) : isRecording ? (
-          <button
-            type="button"
-            onClick={stopRecording}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-red-500 px-3.5 py-2.5 text-sm font-medium text-white shadow-md shadow-red-500/30 transition-all duration-200 ease-in-out hover:bg-red-600 active:scale-[0.98]"
-          >
+          <button type="button" onClick={stopRecording} className="btn btn-danger w-full">
             <Square size={16} /> Stop
           </button>
         ) : (
-          <button
-            type="button"
-            onClick={startRecording}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-3.5 py-2.5 text-sm font-medium text-white shadow-md shadow-brand-500/30 transition-all duration-200 ease-in-out hover:from-brand-600 hover:to-brand-700 active:scale-[0.98]"
-          >
+          <button type="button" onClick={startRecording} className="btn btn-primary w-full">
             <Mic size={16} /> Record
           </button>
         )}
