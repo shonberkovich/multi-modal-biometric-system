@@ -12,8 +12,6 @@ from typing import List
 import cv2
 import numpy as np
 
-_pose_landmarker = None
-
 NUM_LANDMARKS = 33
 COORDS_PER_LANDMARK = 3  # x, y, z
 
@@ -32,26 +30,30 @@ def _ensure_pose_model() -> str:
     return _POSE_MODEL_PATH
 
 
-def _get_pose_landmarker():
-    global _pose_landmarker
-    if _pose_landmarker is None:
-        from mediapipe.tasks import python as mp_python
-        from mediapipe.tasks.python import vision
+def _create_pose_landmarker():
+    """Create a fresh VIDEO-mode PoseLandmarker.
 
-        options = vision.PoseLandmarkerOptions(
-            base_options=mp_python.BaseOptions(model_asset_path=_ensure_pose_model()),
-            running_mode=vision.RunningMode.VIDEO,
-            min_pose_detection_confidence=0.5,
-        )
-        _pose_landmarker = vision.PoseLandmarker.create_from_options(options)
-    return _pose_landmarker
+    VIDEO mode requires strictly increasing timestamps for every frame a
+    landmarker instance ever sees, and each video restarts at 0 ms. A shared
+    instance therefore rejects every video after the first one, so each
+    video gets its own landmarker.
+    """
+    from mediapipe.tasks import python as mp_python
+    from mediapipe.tasks.python import vision
+
+    options = vision.PoseLandmarkerOptions(
+        base_options=mp_python.BaseOptions(model_asset_path=_ensure_pose_model()),
+        running_mode=vision.RunningMode.VIDEO,
+        min_pose_detection_confidence=0.5,
+    )
+    return vision.PoseLandmarker.create_from_options(options)
 
 
 def _extract_landmark_sequence(video_path: str) -> np.ndarray:
     """Return an (num_frames, 33*3) array of pose landmark coordinates."""
     import mediapipe as mp
 
-    landmarker = _get_pose_landmarker()
+    landmarker = _create_pose_landmarker()
     cap = cv2.VideoCapture(video_path)
     fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
     frame_vectors = []
@@ -76,6 +78,7 @@ def _extract_landmark_sequence(video_path: str) -> np.ndarray:
             frame_vectors.append(coords)
     finally:
         cap.release()
+        landmarker.close()
 
     return np.array(frame_vectors, dtype=np.float32)
 
