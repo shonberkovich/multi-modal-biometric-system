@@ -14,6 +14,10 @@ export default function AudioRecorder({ onRecorded }) {
   const { status, startRecording, stopRecording } = useReactMediaRecorder({
     audio: true,
     video: false,
+    // Record real WAV (PCM) through the WAV encoder react-media-recorder
+    // registers. Without it, Chrome/Edge record WebM/Opus (only labelled
+    // audio/wav), which the backend's soundfile-based loader cannot decode.
+    mediaRecorderOptions: { mimeType: 'audio/wav' },
     blobPropertyBag: { type: 'audio/wav' },
     onStop: (blobUrl, blob) => {
       setRecordedUrl(blobUrl)
